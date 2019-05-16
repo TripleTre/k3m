@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input id="file" type="file"></input>
+  <canvas id="canvas" width="960" height="760"></canvas>
+  <script type="module">
+    import { fileReader } from './fileReader.js';
+    import { setupGLProgram, initTexture, initVertices } from './k3m.js';
+
+    const canvas = document.getElementById('canvas');
+    const gl = canvas.getContext('webgl');
+    gl.viewport( 0, 0, canvas.width, canvas.height );
+
+    fileReader('file', image => {
+      gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      const program = setupGLProgram(gl);
+      initTexture(gl, program, image);
+
+      const vertices = new Float32Array([
+        -1.0, 1.0, 0.0, 1.0,
+        -1.0, -1.0, 0.0, 0.0,
+        1.0, 1.0, 1.0, 1.0,
+        1.0, -1.0, 1.0, 0.0
+      ]);
+      initVertices(gl, program, vertices);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    });
+  </script>
+</body>
+</html>
